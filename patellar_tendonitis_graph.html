@@ -1,0 +1,127 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #0F172A;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#F43F5E", "font": {"color": "#F8FAFC"}, "id": "injury_node", "label": "Patellar Tendonitis", "shape": "dot", "size": 30, "title": "Type: Injury"}, {"color": "#6366F1", "font": {"color": "#F8FAFC"}, "id": "body_part_node", "label": "Knee Joint", "shape": "dot", "size": 25, "title": "Type: Body Part"}, {"color": "#10B981", "font": {"color": "#F8FAFC"}, "id": "exercise_0", "label": "Isometric Wall Sits", "shape": "dot", "size": 20, "title": "Type: Exercise"}, {"color": "#10B981", "font": {"color": "#F8FAFC"}, "id": "exercise_1", "label": "Spanish Squats", "shape": "dot", "size": 20, "title": "Type: Exercise"}, {"color": "#10B981", "font": {"color": "#F8FAFC"}, "id": "exercise_2", "label": "Leg Extensions (Slow Eccentric)", "shape": "dot", "size": 20, "title": "Type: Exercise"}, {"color": "#F59E0B", "font": {"color": "#F8FAFC"}, "id": "nutrition_0", "label": "Collagen Peptides", "shape": "dot", "size": 20, "title": "Type: Nutrition"}, {"color": "#F59E0B", "font": {"color": "#F8FAFC"}, "id": "nutrition_1", "label": "Vitamin C", "shape": "dot", "size": 20, "title": "Type: Nutrition"}, {"color": "#F59E0B", "font": {"color": "#F8FAFC"}, "id": "nutrition_2", "label": "Omega-3 Fatty Acids", "shape": "dot", "size": 20, "title": "Type: Nutrition"}, {"color": "#06B6D4", "font": {"color": "#F8FAFC"}, "id": "recovery_0", "label": "Flossing / Occlusion", "shape": "dot", "size": 20, "title": "Type: Recovery"}, {"color": "#06B6D4", "font": {"color": "#F8FAFC"}, "id": "recovery_1", "label": "Patellar Counterforce Strap", "shape": "dot", "size": 20, "title": "Type: Recovery"}, {"color": "#06B6D4", "font": {"color": "#F8FAFC"}, "id": "recovery_2", "label": "Ice Massage", "shape": "dot", "size": 20, "title": "Type: Recovery"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#475569", "from": "injury_node", "label": "located_in", "title": "located_in", "to": "body_part_node", "width": 1}, {"arrows": "to", "color": "#475569", "from": "exercise_0", "label": "relieves load on", "title": "relieves load on", "to": "injury_node", "width": 1}, {"arrows": "to", "color": "#475569", "from": "exercise_1", "label": "strengthens tendon for", "title": "strengthens tendon for", "to": "injury_node", "width": 1}, {"arrows": "to", "color": "#475569", "from": "exercise_2", "label": "rebuilds collagen in", "title": "rebuilds collagen in", "to": "injury_node", "width": 1}, {"arrows": "to", "color": "#475569", "from": "nutrition_0", "label": "synthesizes tendon tissue", "title": "synthesizes tendon tissue", "to": "injury_node", "width": 1}, {"arrows": "to", "color": "#475569", "from": "nutrition_1", "label": "catalyzes collagen absorption", "title": "catalyzes collagen absorption", "to": "injury_node", "width": 1}, {"arrows": "to", "color": "#475569", "from": "nutrition_2", "label": "reduces tendon inflammation", "title": "reduces tendon inflammation", "to": "injury_node", "width": 1}, {"arrows": "to", "color": "#475569", "from": "recovery_0", "label": "increases local blood flow to", "title": "increases local blood flow to", "to": "injury_node", "width": 1}, {"arrows": "to", "color": "#475569", "from": "recovery_1", "label": "disperses mechanical stress on", "title": "disperses mechanical stress on", "to": "injury_node", "width": 1}, {"arrows": "to", "color": "#475569", "from": "recovery_2", "label": "numbs acute pain in", "title": "numbs acute pain in", "to": "injury_node", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"physics": {"forceAtlas2Based": {"gravitationalConstant": -70, "centralGravity": 0.01, "springLength": 130, "springConstant": 0.08}, "minVelocity": 0.75, "solver": "forceAtlas2Based"}, "interaction": {"hover": true, "navigationButtons": true}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
