@@ -3,7 +3,7 @@ import { API_BASE_URL } from '../utils/constants';
 class ApiClient {
   constructor() {
     this.baseUrl = API_BASE_URL;
-    this.useRealBackend = false; 
+    this.useRealBackend = true; 
   }
 
   async get(path) {
