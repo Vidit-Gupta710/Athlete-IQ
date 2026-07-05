@@ -15,6 +15,7 @@ class GraphEdge(BaseModel):
     source: str = Field(..., description="ID of the source node")
     target: str = Field(..., description="ID of the target node")
     label: str = Field(..., description="Description of the relationship (e.g., 'strengthens', 'occurs_in')")
+    relation: str = Field(..., description="Description of the relationship for the React frontend")
 
 class GraphDataResponse(BaseModel):
     nodes: List[GraphNode]
@@ -139,7 +140,8 @@ def generate_graph_data(injury_key: str) -> GraphDataResponse:
     edges.append(GraphEdge(
         source=injury_id,
         target=body_part_id,
-        label="located_in"
+        label="located_in",
+        relation="located_in"
     ))
     
     # 3. Add Exercise Nodes and Edges
@@ -155,7 +157,8 @@ def generate_graph_data(injury_key: str) -> GraphDataResponse:
         edges.append(GraphEdge(
             source=node_id,
             target=injury_id,
-            label=item["relation"]
+            label=item["relation"],
+            relation=item["relation"]
         ))
         
     # 4. Add Nutrition Nodes and Edges
@@ -171,7 +174,8 @@ def generate_graph_data(injury_key: str) -> GraphDataResponse:
         edges.append(GraphEdge(
             source=node_id,
             target=injury_id,
-            label=item["relation"]
+            label=item["relation"],
+            relation=item["relation"]
         ))
         
     # 5. Add Recovery Nodes and Edges
@@ -187,7 +191,8 @@ def generate_graph_data(injury_key: str) -> GraphDataResponse:
         edges.append(GraphEdge(
             source=node_id,
             target=injury_id,
-            label=item["relation"]
+            label=item["relation"],
+            relation=item["relation"]
         ))
         
     return GraphDataResponse(nodes=nodes, edges=edges)
