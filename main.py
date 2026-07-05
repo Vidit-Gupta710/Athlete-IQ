@@ -526,8 +526,12 @@ async def chat(req: ChatRequest, background_tasks: BackgroundTasks):
     if injuries_str:
         memories.append(MemoryContextItem(key="recent_injury", value=injuries_str))
         
-    if cognee_context and "No answer found" not in cognee_context:
-        memories.append(MemoryContextItem(key="retrieved_memory", value=cognee_context))
+    if cognee_context and "No answer found" not in str(cognee_context):
+        if isinstance(cognee_context, list):
+            cognee_context_str = ", ".join([str(item) for item in cognee_context])
+        else:
+            cognee_context_str = str(cognee_context)
+        memories.append(MemoryContextItem(key="retrieved_memory", value=cognee_context_str))
         
     # Call response generator with fallback
     try:
@@ -548,4 +552,4 @@ async def chat(req: ChatRequest, background_tasks: BackgroundTasks):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=5500)
+    uvicorn.run(app, host="127.0.0.1", port=8000)

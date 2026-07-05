@@ -1,5 +1,5 @@
 # Python virtual environments & build artifacts
-venv/
+venv*/
 sdist/
 __pycache__/
 *.pyc

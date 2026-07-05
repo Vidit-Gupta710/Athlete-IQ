@@ -2,8 +2,13 @@ import { API_BASE_URL } from '../utils/constants';
 
 class ApiClient {
   constructor() {
-    this.baseUrl = API_BASE_URL;
+    this.baseUrl = API_BASE_URL.replace(/\/$/, '');
     this.useRealBackend = true; 
+  }
+
+  getUrl(path) {
+    const cleanPath = path.startsWith('/') ? path : `/${path}`;
+    return `${this.baseUrl}${cleanPath}`;
   }
 
   async get(path) {
@@ -11,7 +16,7 @@ class ApiClient {
       return this.handleMockGet(path);
     }
     try {
-      const response = await fetch(`${this.baseUrl}${path}`);
+      const response = await fetch(this.getUrl(path));
       return await this.handleResponse(response);
     } catch (error) {
       console.error(`API GET Error for ${path}:`, error);
@@ -24,7 +29,7 @@ class ApiClient {
       return this.handleMockPost(path, body);
     }
     try {
-      const response = await fetch(`${this.baseUrl}${path}`, {
+      const response = await fetch(this.getUrl(path), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
