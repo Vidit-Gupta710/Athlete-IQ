@@ -19,6 +19,15 @@ backend_dir = root_dir / "backend"
 sys.path.append(str(root_dir))
 sys.path.append(str(backend_dir))
 
+# Configure Cognee directories to project-local absolute paths
+system_dir = root_dir / ".cognee_system"
+data_dir = root_dir / ".cognee_data"
+(system_dir / "databases").mkdir(parents=True, exist_ok=True)
+data_dir.mkdir(parents=True, exist_ok=True)
+
+os.environ["SYSTEM_ROOT_DIRECTORY"] = str(system_dir)
+os.environ["DATA_ROOT_DIRECTORY"] = str(data_dir)
+
 # Configure Cognee environment variables
 os.environ["LLM_PROVIDER"] = "custom"
 os.environ["LLM_MODEL"] = os.getenv("GROQ_MODEL", "groq/llama-3.3-70b-versatile")
@@ -53,6 +62,8 @@ app = FastAPI(title="AthleteIQ Integrated Backend", version="1.0.0")
 async def startup_event():
     print("Running database migrations for Cognee memory...")
     try:
+        from cognee.infrastructure.databases.relational import create_db_and_tables
+        await create_db_and_tables()
         import cognee
         await cognee.run_migrations()
         print("Cognee migrations complete.")

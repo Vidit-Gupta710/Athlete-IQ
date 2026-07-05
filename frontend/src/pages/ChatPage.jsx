@@ -13,27 +13,37 @@ export default function ChatPage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (!athleteId) return;
+
     const savedDb = localStorage.getItem('athlete_mock_db');
     if (savedDb) {
       const db = JSON.parse(savedDb);
-      if (db.chats && db.chats[athleteId]) {
+      if (db.chats && db.chats[athleteId] && db.chats[athleteId].length > 0) {
         setMessages(db.chats[athleteId]);
         return;
       }
     }
 
     if (profile) {
-      setMessages([
+      const welcomeMsg = [
         {
           sender: 'ai',
           content: `Hi ${profile.name}! I am Athlete AI, your sports rehabilitation copilot. I've analyzed your onboarding profile. You logged target sport "${profile.sport}" with frequency "${profile.trainingFrequency}". Let's start discussing your mobility plans, pain points, or injuries.`,
           timestamp: new Date().toISOString()
         }
-      ]);
+      ];
+      setMessages(welcomeMsg);
+
+      // Save initial welcome message to database
+      let db = savedDb ? JSON.parse(savedDb) : {};
+      if (!db.chats) db.chats = {};
+      db.chats[athleteId] = welcomeMsg;
+      localStorage.setItem('athlete_mock_db', JSON.stringify(db));
     }
   }, [athleteId, profile]);
 
   const handleSendMessage = async (text) => {
+    if (!athleteId) return;
     setError(null);
     const userMsg = {
       sender: 'user',
@@ -41,7 +51,17 @@ export default function ChatPage() {
       timestamp: new Date().toISOString()
     };
     
-    setMessages((prev) => [...prev, userMsg]);
+    // Update local state and persist immediately to localStorage
+    setMessages((prev) => {
+      const updated = [...prev, userMsg];
+      const savedDb = localStorage.getItem('athlete_mock_db');
+      let db = savedDb ? JSON.parse(savedDb) : {};
+      if (!db.chats) db.chats = {};
+      db.chats[athleteId] = updated;
+      localStorage.setItem('athlete_mock_db', JSON.stringify(db));
+      return updated;
+    });
+
     setIsSending(true);
 
     try {
@@ -52,7 +72,17 @@ export default function ChatPage() {
           content: response.reply,
           timestamp: response.timestamp || new Date().toISOString()
         };
-        setMessages((prev) => [...prev, aiMsg]);
+
+        // Update local state and persist AI response to localStorage
+        setMessages((prev) => {
+          const updated = [...prev, aiMsg];
+          const savedDb = localStorage.getItem('athlete_mock_db');
+          let db = savedDb ? JSON.parse(savedDb) : {};
+          if (!db.chats) db.chats = {};
+          db.chats[athleteId] = updated;
+          localStorage.setItem('athlete_mock_db', JSON.stringify(db));
+          return updated;
+        });
       } else {
         throw new Error('No reply received from Copilot.');
       }
