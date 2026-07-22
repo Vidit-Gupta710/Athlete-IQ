@@ -58,6 +58,20 @@ async def query_memory(question: str) -> str:
         return f"Error retrieving answer: {e}"
 
 
+async def chat_with_memory(question: str, session_id: str) -> str:
+    try:
+        result = await cognee.search(
+            query_text=question,
+            query_type=SearchType.GRAPH_COMPLETION,
+            session_id=session_id,
+        )
+        if result and len(result) > 0:
+            return result[0]["search_result"]
+        return "No answer found in the knowledge graph."
+    except Exception as e:
+        return f"Error retrieving answer: {e}"
+
+
 async def reset_memory():
     await cognee.prune.prune_data()
     await cognee.prune.prune_system(metadata=True)
