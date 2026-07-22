@@ -7,3 +7,8 @@ export const getAthleteTimeline = async (athleteId) => {
 export const getAthleteGraph = async (athleteId) => {
   return apiClient.get(`/athlete/${athleteId}/graph`);
 };
+
+export const getGraphByKey = async (injuryKey) => {
+  return apiClient.get(`/graph/${injuryKey}`);
+};
+

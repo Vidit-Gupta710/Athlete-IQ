@@ -10,11 +10,14 @@ __pycache__/
 .cognee_cache/
 .lbdb/
 .cognee_system/
+.cognee_data/
+.cognee_system_backup/
+.cognee_data_backup/
 
 # Pip package caches
 *.whl
 *.tar.gz
-
+.env
 # Node modules & frontend build folders
 node_modules/
 dist/

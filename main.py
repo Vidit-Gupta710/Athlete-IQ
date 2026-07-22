@@ -100,14 +100,23 @@ class ChatRequest(BaseModel):
     athleteId: str
     message: str
 
-async def ingest_and_build_graph_task(athlete_name: str, entries: List[str]):
+async def ingest_and_build_graph_task(athlete_id: str, athlete_name: str, entries: List[str]):
     """Background task to add data to Cognee memory and rebuild the graph."""
     print(f"[BACKGROUND TASK] Ingesting {len(entries)} entries into Cognee memory for {athlete_name}...")
-    # Add to memory batch
-    await memory_api.add_athlete_data_batch(entries)
-    print(f"[BACKGROUND TASK] Rebuilding Cognee knowledge graph (cognify)...")
-    await memory_api.build_graph()
-    print(f"[BACKGROUND TASK] Knowledge graph rebuilt successfully.")
+    if athlete_id in athletes_db:
+        athletes_db[athlete_id]["memory_status"] = "processing"
+    try:
+        # Add to memory batch
+        await memory_api.add_athlete_data_batch(entries)
+        print(f"[BACKGROUND TASK] Rebuilding Cognee knowledge graph (cognify)...")
+        await memory_api.build_graph()
+        print(f"[BACKGROUND TASK] Knowledge graph rebuilt successfully.")
+        if athlete_id in athletes_db:
+            athletes_db[athlete_id]["memory_status"] = "ready"
+    except Exception as e:
+        print(f"[BACKGROUND TASK] Error building knowledge graph for {athlete_name}: {e}")
+        if athlete_id in athletes_db:
+            athletes_db[athlete_id]["memory_status"] = "error"
 
 def generate_mock_copilot_response(question: str, memories: List[MemoryContextItem]) -> str:
     """Helper to generate a high-fidelity mock response when GROQ_API_KEY is not set."""
@@ -184,6 +193,7 @@ async def create_profile(profile: AthleteProfileRequest, background_tasks: Backg
     # Store profile in our in-memory DB
     profile_dict = profile.model_dump()
     profile_dict["id"] = athlete_id
+    profile_dict["memory_status"] = "processing"
     athletes_db[athlete_id] = profile_dict
     
     # Create descriptive profile entries to index in Cognee
@@ -200,12 +210,22 @@ async def create_profile(profile: AthleteProfileRequest, background_tasks: Backg
         )
         
     # Queue Cognee ingestion and cognify as a background task to prevent blocking the response
-    background_tasks.add_task(ingest_and_build_graph_task, profile.name, entries)
+    background_tasks.add_task(ingest_and_build_graph_task, athlete_id, profile.name, entries)
     
     return {
         "success": True,
         "athlete_id": athlete_id,
         "profile": profile_dict
+    }
+
+@app.get("/api/athlete/{athleteId}/status")
+async def get_athlete_status(athleteId: str):
+    """Retrieve the current memory graph status for a specific athlete."""
+    if athleteId not in athletes_db:
+        raise HTTPException(status_code=404, detail="Athlete profile not found")
+    return {
+        "athleteId": athleteId,
+        "memory_status": athletes_db[athleteId].get("memory_status", "ready")
     }
 
 @app.get("/api/athlete/{athleteId}/dashboard")
@@ -430,6 +450,19 @@ async def get_graph(athleteId: str):
     graph_data = generate_graph_data(injury_key)
     return graph_data
 
+@app.get("/api/graph/{injuryKey}")
+async def get_graph_by_key(injuryKey: str):
+    """Fetch knowledge graph data by specific injury key."""
+    return generate_graph_data(injuryKey)
+
+@app.get("/api/athletes/list")
+async def list_athletes():
+    """Retrieve all stored athlete profiles and count for coach dashboards or aggregate queries."""
+    return {
+        "count": len(athletes_db),
+        "athletes": list(athletes_db.values())
+    }
+
 @app.post("/api/chat")
 async def chat(req: ChatRequest, background_tasks: BackgroundTasks):
     athlete_id = req.athleteId
@@ -510,7 +543,7 @@ async def chat(req: ChatRequest, background_tasks: BackgroundTasks):
         
         # Ingest interpreted findings into Cognee in background so the LLM remembers it in subsequent questions
         cognee_report_fact = f"Athlete {athlete_name}'s medical report ({filename}) interpreted findings: {interpreted.summary}. Severity level: {interpreted.severity_level}."
-        background_tasks.add_task(ingest_and_build_graph_task, athlete_name, [cognee_report_fact])
+        background_tasks.add_task(ingest_and_build_graph_task, athlete_id, athlete_name, [cognee_report_fact])
         
         return {
             "success": True,
@@ -522,10 +555,10 @@ async def chat(req: ChatRequest, background_tasks: BackgroundTasks):
     is_log_entry = any(word in message.lower() for word in ["log", "workout", "completed", "soreness", "trained"])
     if is_log_entry:
         log_fact = f"On {datetime.date.today().strftime('%B %d, %Y')}, Athlete {athlete_name} logged: '{message}'."
-        background_tasks.add_task(ingest_and_build_graph_task, athlete_name, [log_fact])
+        background_tasks.add_task(ingest_and_build_graph_task, athlete_id, athlete_name, [log_fact])
         
     # Query Cognee memory graph to get relevant context
-    cognee_context = await memory_api.query_memory(message)
+    cognee_context = await memory_api.chat_with_memory(message, athlete_id)
     
     # Formulate memory items for response generator
     memories = [
