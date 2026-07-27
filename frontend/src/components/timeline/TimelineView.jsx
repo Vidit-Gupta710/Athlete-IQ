@@ -16,8 +16,8 @@ export default function TimelineView({ timelineItems }) {
   return (
     <div className="relative">
       {/* Central Running Axis Line */}
-      <div className="absolute left-3 top-2 bottom-4 w-0.5 bg-slate-800">
-        <div className="absolute top-0 bottom-0 left-0 w-full bg-gradient-to-b from-emerald-500 via-indigo-500 to-slate-800" />
+      <div className="absolute left-3 top-2 bottom-4 w-1 neu-pressed overflow-hidden">
+        <div className="absolute top-0 bottom-0 left-0 w-full bg-gradient-to-b from-sky-400 via-sky-500 to-neon-green" />
       </div>
       
       <div className="space-y-6">

@@ -10,26 +10,23 @@ export default function TimelineItem({ item }) {
       case 'completed':
         return {
           icon: Check,
-          iconBg: 'bg-emerald-500 text-slate-950',
-          border: 'border-emerald-500',
-          accentText: 'text-emerald-400',
-          cardBg: 'bg-slate-900/60 border-slate-805'
+          iconBg: 'neu-button text-neon-green',
+          accentText: 'text-neon-green',
+          cardBg: 'neu-flat'
         };
       case 'active':
         return {
           icon: Play,
-          iconBg: 'bg-indigo-500 text-white animate-pulse',
-          border: 'border-indigo-400 shadow-[0_0_12px_rgba(99,102,241,0.4)]',
-          accentText: 'text-indigo-400 font-extrabold',
-          cardBg: 'bg-slate-900 border-indigo-900/50 shadow-xl'
+          iconBg: 'neu-pressed text-theme-primary shadow-[0_0_12px_var(--accent-primary-glow)]',
+          accentText: 'text-theme-primary font-extrabold',
+          cardBg: 'neu-pressed border border-[var(--accent-primary)]/30'
         };
       default: // pending
         return {
           icon: Circle,
-          iconBg: 'bg-slate-950 border border-slate-800 text-slate-600',
-          border: 'border-slate-805',
-          accentText: 'text-slate-500',
-          cardBg: 'bg-slate-900/30 border-slate-850 opacity-70'
+          iconBg: 'neu-pressed text-theme-muted',
+          accentText: 'text-theme-muted',
+          cardBg: 'neu-flat opacity-70'
         };
     }
   };
@@ -40,25 +37,25 @@ export default function TimelineItem({ item }) {
   return (
     <div className="relative pl-8 sm:pl-10 group">
       {/* Node Axis Mark */}
-      <div className={`absolute left-0 top-1.5 w-6 h-6 rounded-full flex items-center justify-center z-10 transition-all duration-300 ${config.iconBg} ${config.border}`}>
+      <div className={`absolute left-0 top-1.5 w-6 h-6 rounded-full flex items-center justify-center z-10 transition-all duration-300 ${config.iconBg}`}>
         <IconComponent className="h-3 w-3" />
       </div>
 
       {/* Box container */}
-      <div className={`p-5 rounded-2xl border transition-all duration-300 hover:border-slate-705 hover:translate-x-0.5 ${config.cardBg}`}>
+      <div className={`p-5 transition-all duration-300 ${config.cardBg}`}>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-2">
-          <h4 className="text-sm font-bold text-slate-100 group-hover:text-white transition duration-150">
+          <h4 className="text-sm font-extrabold text-theme-heading group-hover:text-theme-primary transition duration-150">
             {title}
           </h4>
-          <span className="flex items-center gap-1.5 text-xs text-slate-500 font-semibold font-sans uppercase">
-            <Calendar className="h-3 w-3" />
+          <span className="flex items-center gap-1.5 text-xs text-theme-muted font-bold font-sans uppercase">
+            <Calendar className="h-3 w-3 text-theme-primary" />
             {formatDate(date)}
           </span>
         </div>
-        <p className="text-xs text-slate-400 leading-relaxed">{description}</p>
+        <p className="text-xs text-theme-main font-medium leading-relaxed">{description}</p>
         
         {status === 'active' && (
-          <span className="inline-block mt-3 px-2 py-0.5 rounded bg-indigo-950/40 border border-indigo-900/40 text-[10px] text-indigo-400 font-black uppercase tracking-wider">
+          <span className="inline-block mt-3 px-2.5 py-1 neu-pressed text-[10px] text-theme-primary font-black uppercase tracking-wider border border-[var(--accent-primary)]/30">
             Current Recovery Phase
           </span>
         )}

@@ -41,8 +41,8 @@ export default function FileUpload({ onUploadComplete, disabled }) {
       />
       
       {isScanning ? (
-        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 text-xs font-semibold">
-          <Loader2 className="h-3.5 w-3.5 text-emerald-400 animate-spin" />
+        <div className="flex items-center gap-2 px-3 py-2 neu-pressed text-theme-primary text-xs font-bold">
+          <Loader2 className="h-3.5 w-3.5 text-theme-primary animate-spin" />
           <span>Scanning medical report for details...</span>
         </div>
       ) : (
@@ -50,10 +50,10 @@ export default function FileUpload({ onUploadComplete, disabled }) {
           type="button"
           onClick={handleTriggerUpload}
           disabled={disabled}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-slate-800 bg-slate-900 hover:bg-slate-800/80 text-slate-400 hover:text-white text-xs font-semibold transition duration-200 disabled:opacity-50"
+          className="flex items-center gap-1.5 px-3.5 py-2 neu-button text-theme-muted hover:text-theme-primary text-xs font-bold transition duration-200 disabled:opacity-50 cursor-pointer"
           title="Attach MRI, X-ray or notes"
         >
-          <Paperclip className="h-3.5 w-3.5" />
+          <Paperclip className="h-3.5 w-3.5 text-theme-primary" />
           <span>Upload Report</span>
         </button>
       )}

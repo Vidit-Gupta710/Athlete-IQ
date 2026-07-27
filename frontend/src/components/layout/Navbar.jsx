@@ -8,11 +8,13 @@ import {
   Network, 
   UserCheck, 
   LogOut,
-  Activity
+  Activity,
+  Sun,
+  Moon
 } from 'lucide-react';
 
 export default function Navbar() {
-  const { profile, logoutAthlete } = useAthlete();
+  const { profile, logoutAthlete, theme, toggleTheme } = useAthlete();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -29,19 +31,19 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-slate-800 bg-slate-950/75 backdrop-blur-md">
+    <nav className="sticky top-0 z-50 w-full neu-flat border-b border-[var(--border-subtle)] transition-colors duration-300">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo Section */}
           <div className="flex items-center gap-2">
-            <Activity className="h-6 w-6 text-emerald-400 animate-pulse" />
-            <span className="font-sans text-xl font-black tracking-wider text-white">
-              ATHLETE<span className="text-emerald-400">IQ</span>
+            <Activity className="h-6 w-6 text-theme-primary animate-pulse" />
+            <span className="font-sans text-xl font-black tracking-wider text-[var(--text-main)]">
+              ATHLETE<span className="text-theme-primary">IQ</span>
             </span>
           </div>
 
-          {/* Nav Links */}
-          <div className="hidden md:flex items-center space-x-1">
+          {/* Nav Links - Neumorphic Toggles */}
+          <div className="hidden md:flex items-center space-x-2">
             {navItems.map((item) => {
               const Icon = item.icon;
               return (
@@ -49,10 +51,10 @@ export default function Navbar() {
                   key={item.to}
                   to={item.to}
                   className={({ isActive }) =>
-                    `flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    `flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
                       isActive
-                        ? 'bg-slate-900 text-emerald-400 border border-slate-800'
-                        : 'text-slate-400 hover:text-white hover:bg-slate-900/50'
+                        ? 'neu-button-active text-theme-primary border border-[var(--accent-primary)]/30'
+                        : 'neu-button text-[var(--text-muted)] hover:text-theme-primary'
                     }`
                   }
                 >
@@ -63,17 +65,31 @@ export default function Navbar() {
             })}
           </div>
 
-          {/* User Status / Log out */}
-          <div className="flex items-center gap-4">
+          {/* User Status / Theme Toggle / Reset */}
+          <div className="flex items-center gap-3">
             {profile && (
               <div className="hidden lg:block text-right">
-                <p className="text-xs text-slate-400 uppercase tracking-widest font-semibold">{profile.sport || 'Athlete'}</p>
-                <p className="text-sm font-bold text-slate-200">{profile.name}</p>
+                <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-bold">{profile.sport || 'Athlete'}</p>
+                <p className="text-xs font-bold text-theme-primary">{profile.name}</p>
               </div>
             )}
+
+            {/* Theme Toggle Button */}
+            <button
+              onClick={toggleTheme}
+              className="neu-button p-2.5 text-theme-primary flex items-center justify-center transition-all duration-200 cursor-pointer"
+              title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Theme`}
+            >
+              {theme === 'dark' ? (
+                <Sun className="h-4 w-4 text-amber-400" />
+              ) : (
+                <Moon className="h-4 w-4 text-rose-500" />
+              )}
+            </button>
+
             <button
               onClick={handleLogout}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900 hover:bg-red-950/30 hover:border-red-900 text-slate-400 hover:text-red-400 text-xs font-semibold uppercase tracking-wider transition-all duration-200"
+              className="neu-button px-3.5 py-2 text-[var(--text-muted)] hover:text-red-400 text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 transition-all duration-200 cursor-pointer"
               title="Reset Onboarding"
             >
               <LogOut className="h-3.5 w-3.5" />

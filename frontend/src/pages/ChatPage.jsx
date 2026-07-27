@@ -100,38 +100,38 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-6rem)] max-w-4xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl relative overflow-hidden animate-fade-in">
-      <div className="flex items-center justify-between border-b border-slate-800 px-6 py-4 bg-slate-950/40">
+    <div className="flex flex-col h-[calc(100vh-6rem)] max-w-4xl mx-auto neu-flat relative overflow-hidden animate-fade-in">
+      <div className="flex items-center justify-between border-b border-[var(--border-subtle)] px-6 py-4">
         <div className="flex items-center gap-3">
-          <div className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-ping"></div>
+          <div className="h-2.5 w-2.5 rounded-full bg-[var(--accent-primary)] animate-ping"></div>
           <div>
-            <h1 className="text-base font-bold text-white flex items-center gap-1.5">
-              Ask Athlete AI <Sparkles className="h-4 w-4 text-emerald-400" />
+            <h1 className="text-base font-bold text-theme-heading flex items-center gap-1.5">
+              Ask Athlete AI <Sparkles className="h-4 w-4 text-theme-primary" />
             </h1>
-            <p className="text-xs text-slate-400">Memory-backed sports training injury copilot</p>
+            <p className="text-xs text-theme-muted font-medium">Memory-backed sports training injury copilot</p>
           </div>
         </div>
         
         {profile?.injuries && profile.injuries.length > 0 && (
-          <div className="hidden sm:flex items-center gap-2 bg-emerald-950/20 border border-emerald-900/50 px-3 py-1.5 rounded-xl text-xs text-emerald-400 font-semibold">
+          <div className="hidden sm:flex items-center gap-2 neu-pressed px-3 py-1.5 text-xs text-theme-primary font-bold border border-[var(--accent-primary)]/30">
             Injury Focus: {profile.injuries[0].name}
           </div>
         )}
       </div>
 
       {error && (
-        <div className="bg-red-950/30 border-b border-red-900/50 text-red-400 text-xs px-6 py-3 font-semibold text-center">
+        <div className="neu-pressed text-red-500 text-xs px-6 py-3 font-bold text-center m-3">
           {error}
         </div>
       )}
 
       <ChatWindow messages={messages} isLoading={isSending} />
 
-      <div className="p-4 border-t border-slate-800 bg-slate-950/40 space-y-3">
+      <div className="p-4 border-t border-[var(--border-subtle)] space-y-3">
         <div className="flex items-center justify-between">
           <FileUpload onUploadComplete={handleUploadComplete} disabled={isSending} />
           {profile && (
-            <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold font-sans">
+            <span className="text-[10px] text-theme-muted uppercase tracking-widest font-bold font-sans">
               Coaching {profile.name} • {profile.sport}
             </span>
           )}

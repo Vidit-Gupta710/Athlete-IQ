@@ -74,14 +74,14 @@ export default function DashboardPage() {
     <div className="space-y-8 animate-fade-in">
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight">Athlete Vitals</h1>
-          <p className="text-sm text-slate-400 mt-1">Real-time load limits, alerts and injury indices</p>
+          <h1 className="text-3xl font-extrabold text-theme-heading tracking-tight">Athlete Vitals</h1>
+          <p className="text-sm text-theme-muted font-medium mt-1">Real-time load limits, alerts and injury indices</p>
         </div>
         <button 
           onClick={fetchDashboardData}
-          className="self-start flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900/50 hover:bg-slate-900 text-slate-400 hover:text-white text-xs font-semibold uppercase tracking-wider transition duration-200"
+          className="self-start flex items-center gap-1.5 px-3.5 py-2 neu-button text-theme-muted hover:text-theme-primary text-xs font-bold uppercase tracking-wider transition duration-200 cursor-pointer"
         >
-          <RefreshCw className="h-3 w-3" />
+          <RefreshCw className="h-3 w-3 text-theme-primary" />
           <span>Refresh</span>
         </button>
       </div>

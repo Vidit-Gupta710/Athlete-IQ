@@ -79,8 +79,27 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# In-memory database for athlete profiles
-athletes_db = {}
+# Persistent database for athlete profiles
+import json
+athletes_db_file = root_dir / ".cognee_system" / "athletes_db.json"
+
+def load_athletes_db():
+    if athletes_db_file.exists():
+        try:
+            with open(athletes_db_file, "r") as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"Error loading athletes_db: {e}")
+    return {}
+
+def save_athletes_db(db):
+    try:
+        with open(athletes_db_file, "w") as f:
+            json.dump(db, f)
+    except Exception as e:
+        print(f"Error saving athletes_db: {e}")
+
+athletes_db = load_athletes_db()
 
 class InjuryDetail(BaseModel):
     name: str
@@ -190,11 +209,12 @@ async def health_check():
 async def create_profile(profile: AthleteProfileRequest, background_tasks: BackgroundTasks):
     athlete_id = f"athlete_{uuid.uuid4().hex[:8]}"
     
-    # Store profile in our in-memory DB
+    # Store profile in our database and persist
     profile_dict = profile.model_dump()
     profile_dict["id"] = athlete_id
     profile_dict["memory_status"] = "processing"
     athletes_db[athlete_id] = profile_dict
+    save_athletes_db(athletes_db)
     
     # Create descriptive profile entries to index in Cognee
     entries = [
@@ -449,6 +469,10 @@ async def get_graph(athleteId: str):
     # Generate and return nodes and edges
     graph_data = generate_graph_data(injury_key)
     return graph_data
+@app.get("/api/graph/{injuryKey}")
+@app.get("/graph/{injuryKey}")
+async def get_graph_by_key(injuryKey: str):
+    return generate_graph_data(injuryKey)
 
 @app.get("/api/graph/{injuryKey}")
 async def get_graph_by_key(injuryKey: str):

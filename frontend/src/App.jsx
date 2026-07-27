@@ -15,7 +15,7 @@ function AppRoutes() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans transition-colors duration-300">
+      <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] flex flex-col font-sans transition-colors duration-300">
         {athleteId && <Navbar />}
         <PageContainer>
           <Routes>

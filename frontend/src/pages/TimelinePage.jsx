@@ -62,16 +62,16 @@ export default function TimelinePage() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-8 animate-fade-in">
-      <div className="flex justify-between items-center bg-slate-950/20 py-2 border-b border-slate-900/60">
+      <div className="flex justify-between items-center py-2 border-b border-[var(--border-subtle)]">
         <div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight">Recovery Timeline</h1>
-          <p className="text-sm text-slate-400 mt-1">Milestones and rehabilitation progression logs</p>
+          <h1 className="text-3xl font-extrabold text-theme-heading tracking-tight">Recovery Timeline</h1>
+          <p className="text-sm text-theme-muted font-medium mt-1">Milestones and rehabilitation progression logs</p>
         </div>
         <button 
           onClick={fetchTimeline}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900/50 hover:bg-slate-900 text-slate-400 hover:text-white text-xs font-semibold uppercase tracking-wider transition duration-200"
+          className="flex items-center gap-1.5 px-3.5 py-2 neu-button text-theme-muted hover:text-theme-primary text-xs font-bold uppercase tracking-wider transition duration-200 cursor-pointer"
         >
-          <RefreshCw className="h-3 w-3" />
+          <RefreshCw className="h-3 w-3 text-theme-primary" />
           <span>Sync</span>
         </button>
       </div>

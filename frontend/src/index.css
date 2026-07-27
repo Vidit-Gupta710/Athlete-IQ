@@ -1,1 +1,125 @@
 @import "tailwindcss";
+
+:root {
+  --bg-main: #121418;
+  --text-main: #e2e8f0;
+  --text-muted: #94a3b8;
+  --text-heading: #ffffff;
+  --neu-bg: #121418;
+  --neu-dark-shadow: #08080a;
+  --neu-light-shadow: #1c2026;
+  --accent-primary: #38bdf8;
+  --accent-primary-glow: rgba(56, 189, 248, 0.4);
+  --accent-green: #22c55e;
+  --border-subtle: #1c2026;
+  --btn-grad-1: #16202e;
+  --btn-grad-2: #101620;
+  --btn-text: #38bdf8;
+}
+
+[data-theme="light"] {
+  --bg-main: #f7ded7;
+  --text-main: #4a2521;
+  --text-muted: #7d4d48;
+  --text-heading: #361916;
+  --neu-bg: #f7ded7;
+  --neu-dark-shadow: #dfc0b7;
+  --neu-light-shadow: #ffffff;
+  --accent-primary: #d95f54;
+  --accent-primary-glow: rgba(217, 95, 84, 0.4);
+  --accent-green: #d95f54;
+  --border-subtle: #ebd0c7;
+  --btn-grad-1: #e06b60;
+  --btn-grad-2: #ca4f44;
+  --btn-text: #ffffff;
+}
+
+@layer base {
+  body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+}
+
+/* Dynamic Neumorphism Utilities */
+.neu-flat {
+  background: var(--neu-bg);
+  box-shadow: 6px 6px 14px var(--neu-dark-shadow), -6px -6px 14px var(--neu-light-shadow);
+  border-radius: 1rem;
+  transition: all 0.3s ease;
+}
+
+.neu-pressed {
+  background: var(--neu-bg);
+  box-shadow: inset 4px 4px 8px var(--neu-dark-shadow), inset -4px -4px 8px var(--neu-light-shadow);
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.neu-button {
+  background: var(--neu-bg);
+  box-shadow: 5px 5px 10px var(--neu-dark-shadow), -5px -5px 10px var(--neu-light-shadow);
+  color: var(--text-main);
+  border-radius: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.neu-button:hover {
+  box-shadow: 2px 2px 5px var(--neu-dark-shadow), -2px -2px 5px var(--neu-light-shadow);
+}
+
+.neu-button:active, .neu-button-active {
+  box-shadow: inset 3px 3px 6px var(--neu-dark-shadow), inset -3px -3px 6px var(--neu-light-shadow);
+}
+
+/* Shiny Primary Action Button */
+.neu-blue-button {
+  background: linear-gradient(145deg, var(--btn-grad-1), var(--btn-grad-2));
+  box-shadow: 4px 4px 10px var(--neu-dark-shadow), -4px -4px 10px var(--neu-light-shadow), 0 0 14px var(--accent-primary-glow);
+  color: var(--btn-text);
+  border-radius: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.neu-blue-button:hover {
+  box-shadow: 2px 2px 6px var(--neu-dark-shadow), -2px -2px 6px var(--neu-light-shadow), 0 0 20px var(--accent-primary-glow);
+}
+
+/* Theme-adaptive text/color helpers */
+.text-theme-primary {
+  color: var(--accent-primary);
+}
+
+.text-theme-main {
+  color: var(--text-main);
+}
+
+.text-theme-heading {
+  color: var(--text-heading);
+}
+
+.text-theme-muted {
+  color: var(--text-muted);
+}
+
+.text-neon-green {
+  color: var(--accent-green);
+  text-shadow: 0 0 8px var(--accent-primary-glow);
+}
+
+.bg-neon-green {
+  background-color: var(--accent-green);
+  box-shadow: 0 0 10px var(--accent-primary-glow);
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

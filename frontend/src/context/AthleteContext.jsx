@@ -8,8 +8,18 @@ export function AthleteProvider({ children }) {
     const saved = localStorage.getItem('athleteProfile');
     return saved ? JSON.parse(saved) : null;
   });
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  React.useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
 
   const loginAthlete = (id, athleteProfile) => {
     setAthleteId(id);
@@ -30,6 +40,8 @@ export function AthleteProvider({ children }) {
       value={{ 
         athleteId, 
         profile, 
+        theme,
+        toggleTheme,
         loading, 
         error, 
         setAthleteId,
